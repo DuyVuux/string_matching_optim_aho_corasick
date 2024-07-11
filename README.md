@@ -29,7 +29,34 @@ The KMP (Knuth-Morris-Pratt) algorithm solves the single-pattern search problem 
 
 **KMP Pseudocode:**
 
-<pre lang="md"> ```plaintext function computePrefix(pattern S): pi = array of zeros with size |S| p = 0 for i = 1 to |S| - 1: while p > 0 and S[p] != S[i]: p = pi[p - 1] if S[p] == S[i]: p = p + 1 pi[i] = p return pi function printMatches(pattern S, text T): pi = computePrefix(S) p = 0 for i = 0 to |T| - 1: while p > 0 and S[p] != T[i]: p = pi[p - 1] if S[p] == T[i]: p = p + 1 if p == |S|: print "Found pattern at position " + (i - |S| + 1) p = pi[p - 1] ``` </pre>
+<pre lang="md"> ```function computePrefix(pattern S):
+    pi = array of zeros with length |S|
+    p = 0
+
+    for i from 1 to |S| - 1:
+        while p > 0 and S[p] != S[i]:
+            p = pi[p - 1]           # Move p to the last possible prefix position
+        if S[p] == S[i]:
+            p = p + 1
+        pi[i] = p                   # Store the length of the longest prefix for position i
+
+    return pi
+
+
+function KMPSearch(pattern S, text T):
+    pi = computePrefix(S)
+    p = 0
+
+    for i from 0 to |T| - 1:
+        while p > 0 and S[p] != T[i]:
+            p = pi[p - 1]           # Use pi to avoid redundant comparisons
+        if S[p] == T[i]:
+            p = p + 1
+        if p == |S|:
+            print("Found pattern at position " + (i - |S| + 1))
+            p = pi[p - 1]           # Continue searching for next occurrences
+
+ ``` </pre>
 
 
 
@@ -62,7 +89,24 @@ Starting from the root state, the automaton reads each character in the text T. 
 
 **Trie Construction Pseudocode:**
 
-<pre lang="md"> ```python def build_trie(patterns): root = create_node() for p in patterns: current_node = root for c in p: if current_node.children[c] is None: current_node.children[c] = create_node() current_node = current_node.children[c] current_node.isEndOfWord = True current_node.output.add(p) return root ``` </pre>
+<pre lang="md"> ```def build_trie(patterns):
+    root = create_node()  # Create the root node of the trie
+    
+    for p in patterns:
+        current_node = root
+        for c in p:
+            # If there is no child node for character c, create a new node
+            if current_node.children.get(c) is None:
+                current_node.children[c] = create_node()
+            current_node = current_node.children[c]
+        
+        # Mark the end of a pattern
+        current_node.isEndOfWord = True
+        # Add the pattern to the output set of the current node (used in Aho-Corasick)
+        current_node.output.add(p)
+    
+    return root
+ ``` </pre>
 
 ### **5. Building the Aho-Corasick Automaton**
 
@@ -87,7 +131,7 @@ def build_automaton(root):
                 v.go[c] = go_sf
             else:
                 nxt.suffix_link = go_sf
-                queue.append(nxt)```
+                queue.append(nxt) 
 
 
 
