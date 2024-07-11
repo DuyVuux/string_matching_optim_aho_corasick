@@ -114,7 +114,7 @@ After building the Trie, failure links and output links are added to complete th
 
 **Automaton Construction Pseudocode:**
 
-```python
+<pre lang="md"> ```
 def build_automaton(root):
     queue = [root]
     root.suffix_link = None
@@ -132,7 +132,7 @@ def build_automaton(root):
             else:
                 nxt.suffix_link = go_sf
                 queue.append(nxt) 
-
+ ``` </pre>
 
 
 **Illustrative Example:**  
@@ -145,7 +145,7 @@ In the Aho-Corasick tree, failure links are built so that when a mismatch occurs
 
 **Search Pseudocode:**
 
-```python
+<pre lang="md"> ```
 def search(automaton, text):
     p = automaton.root
     for i, c in enumerate(text):
@@ -159,7 +159,7 @@ def search(automaton, text):
                 for pattern in current.output:
                     print(f"Found pattern {pattern} at position {i - len(pattern) + 1}")
             current = current.suffix_link```
-
+ ``` </pre>
 
 
 ### **7. Algorithm Complexity**
